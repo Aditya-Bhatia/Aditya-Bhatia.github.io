@@ -41,6 +41,7 @@
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+            color: white;
         }
 
         h2 {
@@ -117,7 +118,7 @@
 <body>
     <header>
         <h1>EEC 172 Final Project</h1>
-        <h2>CC3200 Security System/Alarm</h2>
+        <h2 style="color: white; border-bottom: none;">CC3200 Security System/Alarm</h2>
         <div class="authors">
             <div class="author">Hanna Shui - Computer Engineering, UC Davis</div>
             <div class="author">Aditya Bhatia - Computer Science and Engineering, UC Davis</div>
@@ -128,31 +129,27 @@
         <h2>Implementation</h2>
         <h3>Brief Overview</h3>
         <p>The project involves connecting the CC3200 board with a PIR motion sensor, an AS608 Fingerprint sensor, the Adafruit OLED, a buzzer, the IR receiver, and AWS to send a receive updates from Discord and email. The system has 4 main alarm states that are displayed on the OLED and can be swapped between by using the AT&T remote + IR Receiver or by sending signals using Discord slash commands.</p>
-    </div>
 
-    <div class="section">
-        <h2>Alarm States</h2>
+        <h3>Alarm States</h3>
         <p>The alarm has a total of 4 states that the user can switch between, and is offered various ways to switch between them.</p>
 
-        <h3>Alarm Off State</h3>
+        <h4>Alarm Off State</h4>
         <p>The program starts in the default state, which is the alarm off state. In this state, the OLED displays the "Alarm Off" banner in green along with the message to press the mute key on the remote to turn the alarm on...</p>
 
-        <h3>Alarm On State</h3>
+        <h4>Alarm On State</h4>
         <p>When entering the Alarm On state, the OLED screen displays "Alarm On" in red and the text telling the user that they can press mute to disable the alarm...</p>
 
-        <h3>Alarm Triggered State</h3>
+        <h4>Alarm Triggered State</h4>
         <p>In this state, the OLED displays "Triggered!" in red, and both the Red LED and buzzer are constantly pulsing...</p>
 
-        <h3>Password Change or New Fingerprint State</h3>
+        <h4>Password Change or New Fingerprint State</h4>
         <p>When the user is in the base Alarm Off state, pressing SW3 will bring up a prompt that asks them to either enter '0' to change the password or enter a number from 1-9...</p>
-    </div>
 
-    <div class="section">
-        <h2>Hardware Components</h2>
+        <h3>Hardware Components</h3>
         
-        <h3>The OLED Screen</h3>
+        <h4>The OLED Screen</h4>
         <div class="pinout">
-            <h4>Pinout</h4>
+            <h5>Pinout</h5>
             <p>MOSI (Data): Pin 7 (SPI MOSI)<br>
             SCLK (Clock): Pin 5 (SPI CLK)<br>
             DC (Data/Command): GPIO Pin 53<br>
@@ -161,51 +158,47 @@
             VCC/GND: Connected to 3.3V and GND, respectively</p>
         </div>
 
-        <h3>The IR Sensor + Remote</h3>
+        <h4>The IR Sensor + Remote</h4>
         <div class="pinout">
-            <h4>Pinout</h4>
+            <h5>Pinout</h5>
             <p>OUT: GPIO 3 (IR Receiver output)<br>
             VCC/GND: Connected to 3.3V and GND, respectively</p>
         </div>
 
-        <h3>The PIR Sensor</h3>
+        <h4>The PIR Sensor</h4>
         <div class="pinout">
-            <h4>Pinout</h4>
+            <h5>Pinout</h5>
             <p>OUT: GPIO Pin 62 (PIR digital signal)<br>
             VCC/GND: Connected to 5V and GND, respectively</p>
         </div>
 
-        <h3>The Buzzer</h3>
+        <h4>The Buzzer</h4>
         <div class="pinout">
-            <h4>Pinout</h4>
+            <h5>Pinout</h5>
             <p>Signal (+): Timer A0 PWM output (GPIO Pin 17)<br>
             GND: Connected to GND</p>
         </div>
 
-        <h3>The Fingerprint Sensor</h3>
+        <h4>The Fingerprint Sensor</h4>
         <div class="pinout">
-            <h4>Pinout</h4>
+            <h5>Pinout</h5>
             <p>TX: Connected to UART1 RX (Pin 02)<br>
             RX: Connected to UART1 TX (Pin 01)<br>
             VCC/GND: Connected to 5V and GND, respectively</p>
         </div>
-    </div>
 
-    <div class="section">
-        <h2>Communication with AWS</h2>
-        <h3>Get Request</h3>
+        <h3>Communication with AWS</h3>
+        <h4>Get Request</h4>
         <p>The system sends periodic HTTP GET requests to AWS IoT to fetch the current shadow state of the device...</p>
 
-        <h3>Post Request</h3>
+        <h4>Post Request</h4>
         <p>Whenever the alarm state changes (e.g., from Off to On, On to Triggered, etc.) or when the password is changed, the system sends an HTTP POST to the AWS IoT endpoint...</p>
-    </div>
 
-    <div class="section">
-        <h2>Discord Communication</h2>
-        <h3>Messaging Lambda</h3>
+        <h3>Discord Communication</h3>
+        <h4>Messaging Lambda</h4>
         <p>An SNS topic is set up so that it triggers an AWS Lambda function whenever the shadow state changes...</p>
 
-        <h3>Slash Commands</h3>
+        <h4>Slash Commands</h4>
         <p>Configuring a slash command is a bit more complicated. It first involves creating a public bot for your account using the Discord Developer Portal...</p>
     </div>
 
