@@ -157,6 +157,7 @@
             RST (Reset): GPIO Pin 18<br>
             VCC/GND: Connected to 3.3V and GND, respectively</p>
         </div>
+        <p>The OLED display is a 128x128 Adafruit SSD1351 module connected via SPI. It is used to present the user interface, including alarm states, input prompts, error messages, and confirmation dialogs. The top half of the screen displays the current system state in large font and color-coded messages, while the bottom half is reserved for input feedback, error notifications, or additional instructions. Drawing functions from a modified Adafruit OLED library are used. These functions were defined as part of earlier labs.</p>
 
         <h4>The IR Sensor + Remote</h4>
         <div class="pinout">
@@ -164,6 +165,7 @@
             <p>OUT: GPIO 3 (IR Receiver output)<br>
             VCC/GND: Connected to 3.3V and GND, respectively</p>
         </div>
+        <p>An AT&T Universal Remote communicates with the system via the provided IR receiver from earlier labs. The IR signal is connected to GPIO 3 and processed using GPIO interrupt handlers and pulse-width measurement via SysTick. Each button on the remote corresponds to a unique 32-bit code, decoded in real-time. Shorter pulse widths are represented as 0, and longer pulse widths are represented as 1. The code has an array of known codes for each button and checks the code to know which button has been pressed. The mute ('m) and last ('l') buttons are used for system state control and submitting, and character deletion, respectively, while the numeric buttons ('0' to '9') are used for password and ID input. The code used for this is the same as the one for the previous two labs.</p>
 
         <h4>The PIR Sensor</h4>
         <div class="pinout">
@@ -171,6 +173,7 @@
             <p>OUT: GPIO Pin 62 (PIR digital signal)<br>
             VCC/GND: Connected to 5V and GND, respectively</p>
         </div>
+        <p>The PIR (Passive Infrared) sensor detects human motion and is connected to GPIO Pin 62 (GPIOA0, pin 0x80). When motion is detected, it triggers a rising-edge GPIO interrupt. If the system is in the Alarm On state, the motion event activates the input mode and starts a ~30-second countdown during which the user must disable the alarm via password or fingerprint. If no valid input is received within this grace period, the system transitions to the Alarm Triggered state.</p>
 
         <h4>The Buzzer</h4>
         <div class="pinout">
@@ -178,6 +181,7 @@
             <p>Signal (+): Timer A0 PWM output (GPIO Pin 17)<br>
             GND: Connected to GND</p>
         </div>
+        <p>A piezoelectric buzzer is connected to a GPIO pin configured for PWM using Timer A0. It provides audible feedback to indicate state transitions: Two short beeps: Alarm Off. One long beep: Alarm On. Continuous pulsing: Alarm Triggered. The PWM duty cycle is modified with UpdateDutyCycle() to produce these tones.</p>
 
         <h4>The Fingerprint Sensor</h4>
         <div class="pinout">
@@ -186,6 +190,10 @@
             RX: Connected to UART1 TX (Pin 01)<br>
             VCC/GND: Connected to 5V and GND, respectively</p>
         </div>
+        <p>The AS608 Fingerprint Sensor communicates via UART1 and is initialized using the <a href="https://github.com/adafruit/Adafruit-Fingerprint-Sensor-Library" target="_blank">Adafruit_Fingerprint library</a>. The sensor has been implemented with the CC3200 using a modified version of Adafruit_Fingerprint.cpp and Adafruit_Fingerprint.h. The modules have been modified to replace all calls to Arduino-based serial read and write functions with UartCharPut and UartCharGet functions of the CC3200. The class's constructor has also been modified to accept the macro for UARTA1 so that it can enable the correct UART interface to use to transmit and receive data. The appropriate includes were also added to the library code. The module is used for two main functions:<br>
+        Authentication: Disarm the alarm by matching a scanned fingerprint against stored templates.<br>
+        Enrollment: Add or replace fingerprints by assigning them to IDs (1–9). The user must place the same finger twice for confirmation before it is stored.<br>
+        The fingerprint process includes detailed prompts and feedback via the OLED screen and can recover from various error states, such as image mismatch or poor quality. The authentication and enrollment code has been adapted from the <a href="https://github.com/adafruit/Adafruit-Fingerprint-Sensor-Library/blob/master/examples/fingerprint/fingerprint.ino" target="_blank">fingerprint</a> and <a href="https://github.com/adafruit/Adafruit-Fingerprint-Sensor-Library/blob/master/examples/enroll/enroll.ino" target="_blank">enroll</a> Arduino examples, respectively. The main functions from both examples had to be slightly modified to work properly in the project. More details about the modifications have been described in the <a href="#challenges">Challenges section</a>. The fingerprint sensor is only turned on when the code needs input from the sensor. The code to turn on and begin communication with the sensor is also from the example code by Adafruit.</p>
 
         <h3>Communication with AWS</h3>
         <h4>Get Request</h4>
