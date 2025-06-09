@@ -1,5 +1,4 @@
-**EEC 172 Final Project**
-**UC Davis**
+**Final Project**
 
 ## CC3200 Security System/Alarm
 
@@ -15,9 +14,21 @@ UC Davis
  Davis CA USA  
  htxbhatia@ucdavis.edu
 
+**Description**  
+The project that we have prototyped is a rudimentary security system featuring a motion detector, an audio alarm, an interface, and a fingerprint sensor with multiple options for arming and disarming the system, including an option to access the system remotely through a bot on Discord. Through either the physical interface or the Discord bot, the system can be turned on or off. Additionally, through the physical interface, the user can set passwords and register new fingerprints to work with the fingerprint sensor. 
+
+**Design**  
+**Functional Specifications**  
+**![][image1]**  
+Upon starting the system, the terminal will enter an idle state that allows the user to select whether the system should be armed or disarmed, or if they want to set the password/register a new fingerprint. If the user selects the “armed” state, the system will be armed and wait for the motion detector to be triggered. Upon being triggered, the alarm will prompt the user for a password or a fingerprint read. If an incorrect password or fingerprint is input 3 times, or if the system times out, the alarm will sound and the system will enter its “triggered” state, where it will also send the system owner an email and a Discord alert. When a correct passcode is input into the terminal, or a valid fingerprint is input, the system will revert back to an idle state. If the user chooses to set the password/register a new fingerprint, the system will prompt the user to choose whether they want to set the password or register one of the 9 available fingerprint slots. Upon confirming the new password or fingerprint, the system will revert back to its idle state.
+
+**System Architecture**  
+![][image2]  
+The majority of the components in the system connect directly to the CC3200 LaunchPad. The 128x128 OLED Display connects to the CC3200 LaunchPad through SPI, and the PIR Motion Sensor connects to it through GPIO. A buzzer connects to the CC3200 LaunchPad through GPIO configured as a PWM signal, and the IR Receiver connects to the CC3200 through GPIO as well. An AT\&T S10-S3 remote, used to input the passcode and select a mode for the system, connects to the IR Receiver. A fingerprint scanner is connected to the CC3200 through UART. Finally, the CC3200 connects to AWS IoT via the REST API in order to alert the user remotely through email, and to connect to the Discord bot for remote alarm arming and disarming.
+
 **Implementation**  
 **Brief Overview**  
-The project involves connecting the CC3200 board with a PIR motion sensor, an AS608 Fingerprint sensor, the Adafruit OLED, a buzzer, the IR receiver, and AWS to send a receive updates from Discord and email. The system has 4 main alarm states that are displayed on the OLED and can be swapped between by using the AT\&T remote \+ IR Receiver or by sending signals using Discord slash commands. The alarm is triggered when the PIR motion sensor detects motion, and the alarm can be disabled by entering a password using the Remote ir by reading a valid fingerprint using the fingerprint sensor. The user can also change the alarm password and add or replace up to 9 fingerprints. The buzzer is used to send pulses to signify which state the alarm is in, and so is the onboard Red LED of the CC3200. The user can enter a Discord channel that alerts them whenever the state of the alarm has been changed or if the password has been changed. From the Discord channel, the user can send slash commands to enable or disable the alarm or set an alarm on and off timer. The user also receives an email when the alarm is triggered due to motion or incorrect fingerprint, or password attempts.
+The project involves connecting the CC3200 board with a PIR motion sensor, an AS608 Fingerprint sensor, the Adafruit OLED, a buzzer, the IR receiver, and AWS to send and receive updates from Discord and email. The system has 4 main alarm states that are displayed on the OLED and can be swapped between by using the AT\&T remote \+ IR Receiver or by sending signals using Discord slash commands. The alarm is triggered when the PIR motion sensor detects motion, and the alarm can be disabled by entering a password using the Remote ir by reading a valid fingerprint using the fingerprint sensor. The user can also change the alarm password and add or replace up to 9 fingerprints. The buzzer is used to send pulses to signify which state the alarm is in, and so is the onboard Red LED of the CC3200. The user can enter a Discord channel that alerts them whenever the state of the alarm has been changed or if the password has been changed. From the Discord channel, the user can send slash commands to enable or disable the alarm or set an alarm on and off timer. The user also receives an email when the alarm is triggered due to motion or incorrect fingerprint, or password attempts.
 
 **Alarm States**  
 The alarm has a total of 4 states that the user can switch between, and is offered various ways to switch between them.
@@ -67,7 +78,7 @@ GND: Connected to GND
 **Description**  
 A piezoelectric buzzer is connected to a GPIO pin configured for PWM using Timer A0. It provides audible feedback to indicate state transitions: Two short beeps: Alarm Off. One long beep: Alarm On. Continuous pulsing: Alarm Triggered. The PWM duty cycle is modified with UpdateDutyCycle() to produce these tones.
 
-**The Fingeprint Sensor**  
+**The Fingerprint Sensor**  
 **Pinout**  
 TX: Connected to UART1 RX (Pin 02\)  
 RX: Connected to UART1 TX (Pin 01\)  
@@ -87,9 +98,11 @@ Whenever the alarm state changes (e.g., from Off to On, On to Triggered, etc.) o
 
 **Discord Communication**  
 **Messaging Lambda**  
+[Link to Python code for the lambda.](https://github.com/Aditya-Bhatia/EEC172-Project/blob/main/AWSLambdas/DiscordMessage.py)  
 An SNS topic is set up so that it triggers an AWS Lambda function whenever the shadow state changes. When a new state is posted (e.g., "Alarm On"), the function sends a message to a designated Discord channel using a pre-configured webhook. The webhook URL is taken from the channel created by the user in their own Discord server. The lambda grabs the text from the email field in the state and formats it into a message, which is then sent to Discord as an HTTP post to the webhook URL. Discord then sends that message to the channel using a bot. Currently, the lambda sends messages for the alarm state “Alarm On/Off”, “Intruder Alert”, password changes “Password Reset”, and can also show the time set by the user for the on and off timer for the alarm converted to Pacific Daylight Time and report them as “Start: \<time\> Stop: \<time\>”.
 
 **Slash Commands**  
+[Link to Python code for the lambda.](https://github.com/Aditya-Bhatia/EEC172-Project/blob/main/AWSLambdas/DiscordAlarmBot.py)  
 Configuring a slash command is a bit more complicated. It first involves creating a public bot for your account using the Discord Developer Portal. Once the bot is created, it generates a bot URL that you can use to invite the bot to your server. Once that is done, you can create the slash commands you want using JSON files. We used ChatGPT to generate the JSON files for our two slash commands. You can then post these JSON files using curl to the bot’s URL while providing your Discord public key to add the slash command to the bot. In AWS, you have to create your own API endpoint URL with the format of \<name\>/interactions. The bot will use this endpoint to send and receive data from the AWS Lambda function. The next step involves creating the lambda function. The function needs to include the pynacl library, which needs to be installed, zipped, and then uploaded for Python 3.9 to AWS as a layer that needs to be added to the lambda. The lambda function needs to verify the post signature from the bot using this library, as can be seen in the Discord-provided instructions. This verification is required for Discord to let you use the bot. Outside of that, the lambda must reply with a 200 code and body response of ‘1’ when receiving a request from Discord that is of type ‘1’. Discord uses this ping to validate your API’s endpoint. Once this functionality of the lambda is implemented, you can add your AWS API endpoint into the interactions URL section in the Discord Dev Portal for your bot. Now, it is possible to handle the slash commands. Our code handles Discord slash commands to remotely control a smart alarm system by updating its state in AWS IoT.
 
 Slash Command: /alarm  
@@ -137,3 +150,14 @@ Currently, the code does not allow the user to remove a fingerprint from the sen
 
 **5\. Use Discord slash command to change password**  
 It would be beneficial for the user to be able to change the password of the alarm using a slash command on Discord. To implement this, we would have to use encryption to store and share the password instead of the plain text storage that it currently uses, so that an attacker can’t just packet sniff the post request bodies being sent to the alarm and grab the password from there.
+
+**Bill of Materials**  
+CC3200 LaunchPad \- Provided  
+128x128 OLED Display \- Provided  
+TSOP 31236 IR Receiver \- Provided  
+100 ohm resistor \- Provided  
+100 uF capacitor \- Provided  
+AT\&T S10-S3 remote \- Provided  
+HC-SR501 PIR Motion Sensor Detector \- $7.29 for 3 on Amazon  
+Passive Buzzer \- Already owned  
+Optical Fingerprint Reader Sensor \- $20.99 on Amazon

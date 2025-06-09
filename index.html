@@ -122,6 +122,13 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
+        /* Style for single images */
+        .component-image:not(.component-image-container img) {
+            max-width: 300px;
+            display: block;
+            margin: 15px auto;
+        }
+
         .component-image-container {
             display: flex;
             gap: 20px;
@@ -147,6 +154,35 @@
             <div class="author">Aditya Bhatia - Computer Science and Engineering, UC Davis</div>
         </div>
     </header>
+
+    <div class="section">
+        <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 30px;">Video Demo</h2>
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 0 auto;">
+            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                    src="https://youtu.be/ATdV3ln0igk?si=xKzGPTIPxDChgS5e" 
+                    title="Project Demo Video" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Description</h2>
+        <p>The project that we have prototyped is a rudimentary security system featuring a motion detector, an audio alarm, an interface, and a fingerprint sensor with multiple options for arming and disarming the system, including an option to access the system remotely through a bot on Discord. Through either the physical interface or the Discord bot, the system can be turned on or off. Additionally, through the physical interface, the user can set passwords and register new fingerprints to work with the fingerprint sensor.</p>
+    </div>
+
+    <div class="section">
+        <h2>Design</h2>
+        <h3>Functional Specifications</h3>
+        <img src="images/Functional Specifications diagram.png" alt="Functional Specifications Diagram" class="component-image">
+        <p>Upon starting the system, the terminal will enter an idle state that allows the user to select whether the system should be armed or disarmed, or if they want to set the password/register a new fingerprint. If the user selects the "armed" state, the system will be armed and wait for the motion detector to be triggered. Upon being triggered, the alarm will prompt the user for a password or a fingerprint read. If an incorrect password or fingerprint is input 3 times, or if the system times out, the alarm will sound and the system will enter its "triggered" state, where it will also send the system owner an email and a Discord alert. When a correct passcode is input into the terminal, or a valid fingerprint is input, the system will revert back to an idle state. If the user chooses to set the password/register a new fingerprint, the system will prompt the user to choose whether they want to set the password or register one of the 9 available fingerprint slots. Upon confirming the new password or fingerprint, the system will revert back to its idle state.</p>
+
+        <h3>System Architecture</h3>
+        <img src="images/System architecture Diagram.png" alt="System Architecture Diagram" class="component-image">
+        <p>The majority of the components in the system connect directly to the CC3200 LaunchPad. The 128x128 OLED Display connects to the CC3200 LaunchPad through SPI, and the PIR Motion Sensor connects to it through GPIO. A buzzer connects to the CC3200 LaunchPad through GPIO configured as a PWM signal, and the IR Receiver connects to the CC3200 through GPIO as well. An AT&T S10-S3 remote, used to input the passcode and select a mode for the system, connects to the IR Receiver. A fingerprint scanner is connected to the CC3200 through UART. Finally, the CC3200 connects to AWS IoT via the REST API in order to alert the user remotely through email, and to connect to the Discord bot for remote alarm arming and disarming.</p>
+    </div>
 
     <div class="section">
         <h2>Implementation</h2>
@@ -387,6 +423,21 @@
 
         <h3>5. Use Discord slash command to change password</h3>
         <p>It would be beneficial for the user to be able to change the password of the alarm using a slash command on Discord. To implement this, we would have to use encryption to store and share the password instead of the plain text storage that it currently uses, so that an attacker can't just packet sniff the post request bodies being sent to the alarm and grab the password from there.</p>
+    </div>
+
+    <div class="section">
+        <h2>Bill of Materials</h2>
+        <ul>
+            <li>CC3200 LaunchPad - Provided</li>
+            <li>128x128 OLED Display - Provided</li>
+            <li>TSOP 31236 IR Receiver - Provided</li>
+            <li>100 ohm resistor - Provided</li>
+            <li>100 uF capacitor - Provided</li>
+            <li>AT&T S10-S3 remote - Provided</li>
+            <li>HC-SR501 PIR Motion Sensor Detector - $7.29 for 3 on Amazon</li>
+            <li>Passive Buzzer - Already owned</li>
+            <li>Optical Fingerprint Reader Sensor - $20.99 on Amazon</li>
+        </ul>
     </div>
 </body>
 </html>
