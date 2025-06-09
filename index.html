@@ -128,7 +128,7 @@
     <div class="section">
         <h2>Implementation</h2>
         <h3>Brief Overview</h3>
-        <p>The project involves connecting the CC3200 board with a PIR motion sensor, an AS608 Fingerprint sensor, the Adafruit OLED, a buzzer, the IR receiver, and AWS to send a receive updates from Discord and email. The system has 4 main alarm states that are displayed on the OLED and can be swapped between by using the AT\&T remote \+ IR Receiver or by sending signals using Discord slash commands. The alarm is triggered when the PIR motion sensor detects motion, and the alarm can be disabled by entering a password using the Remote ir by reading a valid fingerprint using the fingerprint sensor. The user can also change the alarm password and add or replace up to 9 fingerprints. The buzzer is used to send pulses to signify which state the alarm is in, and so is the onboard Red LED of the CC3200. The user can enter a Discord channel that alerts them whenever the state of the alarm has been changed or if the password has been changed. From the Discord channel, the user can send slash commands to enable or disable the alarm or set an alarm on and off timer. The user also receives an email when the alarm is triggered due to motion or incorrect fingerprint, or password attempts.</p>
+        <p>The project involves connecting the CC3200 board with a PIR motion sensor, an AS608 Fingerprint sensor, the Adafruit OLED, a buzzer, the IR receiver, and AWS to send a receive updates from Discord and email. The system has 4 main alarm states that are displayed on the OLED and can be swapped between by using the AT&T remote + IR Receiver or by sending signals using Discord slash commands. The alarm is triggered when the PIR motion sensor detects motion, and the alarm can be disabled by entering a password using the Remote ir by reading a valid fingerprint using the fingerprint sensor. The user can also change the alarm password and add or replace up to 9 fingerprints. The buzzer is used to send pulses to signify which state the alarm is in, and so is the onboard Red LED of the CC3200. The user can enter a Discord channel that alerts them whenever the state of the alarm has been changed or if the password has been changed. From the Discord channel, the user can send slash commands to enable or disable the alarm or set an alarm on and off timer. The user also receives an email when the alarm is triggered due to motion or incorrect fingerprint, or password attempts.</p>
 
         <h3>Alarm States</h3>
         <p>The alarm has a total of 4 states that the user can switch between, and is offered various ways to switch between them.</p>
@@ -150,45 +150,136 @@
         <h4>The OLED Screen</h4>
         <div class="pinout">
             <h5>Pinout</h5>
-            <p>MOSI (Data): Pin 7 (SPI MOSI)<br>
-            SCLK (Clock): Pin 5 (SPI CLK)<br>
-            DC (Data/Command): GPIO Pin 53<br>
-            CS (Chip Select): GPIO Pin 15<br>
-            RST (Reset): GPIO Pin 18<br>
-            VCC/GND: Connected to 3.3V and GND, respectively</p>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: var(--primary-color); color: white;">
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">OLED Screen</th>
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">CC3200 Board</th>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">MOSI (Data)</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Pin 7 (SPI MOSI)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">SCLK (Clock)</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Pin 5 (SPI CLK)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">DC (Data/Command)</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GPIO Pin 53</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">CS (Chip Select)</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GPIO Pin 15</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">RST (Reset)</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GPIO Pin 18</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">VCC</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">3.3V</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                </tr>
+            </table>
         </div>
         <p>The OLED display is a 128x128 Adafruit SSD1351 module connected via SPI. It is used to present the user interface, including alarm states, input prompts, error messages, and confirmation dialogs. The top half of the screen displays the current system state in large font and color-coded messages, while the bottom half is reserved for input feedback, error notifications, or additional instructions. Drawing functions from a modified Adafruit OLED library are used. These functions were defined as part of earlier labs.</p>
 
         <h4>The IR Sensor + Remote</h4>
         <div class="pinout">
             <h5>Pinout</h5>
-            <p>OUT: GPIO 3 (IR Receiver output)<br>
-            VCC/GND: Connected to 3.3V and GND, respectively</p>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: var(--primary-color); color: white;">
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">IR Sensor</th>
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">CC3200 Board</th>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">OUT</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GPIO 3 (IR Receiver output)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">VCC</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">3.3V</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                </tr>
+            </table>
         </div>
         <p>An AT&T Universal Remote communicates with the system via the provided IR receiver from earlier labs. The IR signal is connected to GPIO 3 and processed using GPIO interrupt handlers and pulse-width measurement via SysTick. Each button on the remote corresponds to a unique 32-bit code, decoded in real-time. Shorter pulse widths are represented as 0, and longer pulse widths are represented as 1. The code has an array of known codes for each button and checks the code to know which button has been pressed. The mute ('m) and last ('l') buttons are used for system state control and submitting, and character deletion, respectively, while the numeric buttons ('0' to '9') are used for password and ID input. The code used for this is the same as the one for the previous two labs.</p>
 
         <h4>The PIR Sensor</h4>
         <div class="pinout">
             <h5>Pinout</h5>
-            <p>OUT: GPIO Pin 62 (PIR digital signal)<br>
-            VCC/GND: Connected to 5V and GND, respectively</p>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: var(--primary-color); color: white;">
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">PIR Sensor</th>
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">CC3200 Board</th>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">OUT</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GPIO Pin 62 (PIR digital signal)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">VCC</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">5V</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                </tr>
+            </table>
         </div>
         <p>The PIR (Passive Infrared) sensor detects human motion and is connected to GPIO Pin 62 (GPIOA0, pin 0x80). When motion is detected, it triggers a rising-edge GPIO interrupt. If the system is in the Alarm On state, the motion event activates the input mode and starts a ~30-second countdown during which the user must disable the alarm via password or fingerprint. If no valid input is received within this grace period, the system transitions to the Alarm Triggered state.</p>
 
         <h4>The Buzzer</h4>
         <div class="pinout">
             <h5>Pinout</h5>
-            <p>Signal (+): Timer A0 PWM output (GPIO Pin 17)<br>
-            GND: Connected to GND</p>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: var(--primary-color); color: white;">
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Buzzer</th>
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">CC3200 Board</th>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Signal (+)</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Timer A0 PWM output (GPIO Pin 17)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                </tr>
+            </table>
         </div>
         <p>A piezoelectric buzzer is connected to a GPIO pin configured for PWM using Timer A0. It provides audible feedback to indicate state transitions: Two short beeps: Alarm Off. One long beep: Alarm On. Continuous pulsing: Alarm Triggered. The PWM duty cycle is modified with UpdateDutyCycle() to produce these tones.</p>
 
         <h4>The Fingerprint Sensor</h4>
         <div class="pinout">
             <h5>Pinout</h5>
-            <p>TX: Connected to UART1 RX (Pin 02)<br>
-            RX: Connected to UART1 TX (Pin 01)<br>
-            VCC/GND: Connected to 5V and GND, respectively</p>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: var(--primary-color); color: white;">
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">Fingerprint Sensor</th>
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">CC3200 Board</th>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">TX</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">UART1 RX (Pin 02)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">RX</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">UART1 TX (Pin 01)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">VCC</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">5V</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">GND</td>
+                </tr>
+            </table>
         </div>
         <p>The AS608 Fingerprint Sensor communicates via UART1 and is initialized using the <a href="https://github.com/adafruit/Adafruit-Fingerprint-Sensor-Library" target="_blank">Adafruit_Fingerprint library</a>. The sensor has been implemented with the CC3200 using a modified version of Adafruit_Fingerprint.cpp and Adafruit_Fingerprint.h. The modules have been modified to replace all calls to Arduino-based serial read and write functions with UartCharPut and UartCharGet functions of the CC3200. The class's constructor has also been modified to accept the macro for UARTA1 so that it can enable the correct UART interface to use to transmit and receive data. The appropriate includes were also added to the library code. The module is used for two main functions:<br>
         Authentication: Disarm the alarm by matching a scanned fingerprint against stored templates.<br>
@@ -207,20 +298,20 @@
         <p>An SNS topic is set up so that it triggers an AWS Lambda function whenever the shadow state changes. When a new state is posted (e.g., "Alarm On"), the function sends a message to a designated Discord channel using a pre-configured webhook. The webhook URL is taken from the channel created by the user in their own Discord server. The lambda grabs the text from the email field in the state and formats it into a message, which is then sent to Discord as an HTTP post to the webhook URL. Discord then sends that message to the channel using a bot. Currently, the lambda sends messages for the alarm state "Alarm On/Off", "Intruder Alert", password changes "Password Reset", and can also show the time set by the user for the on and off timer for the alarm converted to Pacific Daylight Time and report them as "Start: [time] Stop: [time]".</p>
 
         <h4>Slash Commands</h4>
-        <p>Configuring a slash command is a bit more complicated. It first involves creating a public bot for your account using the Discord Developer Portal. Once the bot is created, it generates a bot URL that you can use to invite the bot to your server. Once that is done, you can create the slash commands you want using JSON files. We used ChatGPT to generate the JSON files for our two slash commands. You can then post these JSON files using curl to the bot's URL while providing your Discord public key to add the slash command to the bot. In AWS, you have to create your own API endpoint URL with the format of [name]/interactions. The bot will use this endpoint to send and receive data from the AWS Lambda function. The next step involves creating the lambda function. The function needs to include the pynacl library, which needs to be installed, zipped, and then uploaded for Python 3.9 to AWS as a layer that needs to be added to the lambda. The lambda function needs to verify the post signature from the bot using this library, as can be seen in the Discord-provided instructions. This verification is required for Discord to let you use the bot. Outside of that, the lambda must reply with a 200 code and body response of '1' when receiving a request from Discord that is of type '1'. Discord uses this ping to validate your API's endpoint. Once this functionality of the lambda is implemented, you can add your AWS API endpoint into the interactions URL section in the Discord Dev Portal for your bot. Now, it is possible to handle the slash commands. Our code handles Discord slash commands to remotely control a smart alarm system by updating its state in AWS IoT.
+        <p>Configuring a slash command is a bit more complicated. It first involves creating a public bot for your account using the Discord Developer Portal. Once the bot is created, it generates a bot URL that you can use to invite the bot to your server. Once that is done, you can create the slash commands you want using JSON files. We used ChatGPT to generate the JSON files for our two slash commands. You can then post these JSON files using curl to the bot's URL while providing your Discord public key to add the slash command to the bot. In AWS, you have to create your own API endpoint URL with the format of [name]/interactions. The bot will use this endpoint to send and receive data from the AWS Lambda function. The next step involves creating the lambda function. The function needs to include the pynacl library, which needs to be installed, zipped, and then uploaded for Python 3.9 to AWS as a layer that needs to be added to the lambda. The lambda function needs to verify the post signature from the bot using this library, as can be seen in the Discord-provided instructions. This verification is required for Discord to let you use the bot. Outside of that, the lambda must reply with a 200 code and body response of '1' when receiving a request from Discord that is of type '1'. Discord uses this ping to validate your API's endpoint. Once this functionality of the lambda is implemented, you can add your AWS API endpoint into the interactions URL section in the Discord Dev Portal for your bot. Now, it is possible to handle the slash commands. Our code handles Discord slash commands to remotely control a smart alarm system by updating its state in AWS IoT.</p>
 
-            Slash Command: /alarm  
-            Purpose: Turns the alarm on or off.  
-            How it works:  
-            Reads the value (on or off) from the command. Sends an update to the AWS IoT device shadow with an "email" field like "Alarm on" or "Alarm off". Sends a confirmation reply in Discord: ✅ Alarm set to on (though this ends up not being visible to the user)
-            
-            Slash Command: /timer  
-            Purpose: Schedules the alarm to turn on/off at specific times.  
-            How it works:  
-            Parses ISO timestamps (start_str and stop_str) and localizes them to PDT (Pacific Daylight Time). Converts these times to UNIX timestamps. Sends the timestamps to AWS IoT under a "timer" key in the device shadow. Sends a confirmation reply in Discord showing the scheduled times.
-            
-            In both cases, AWS IoT triggers updates to the connected CC3200 device, which syncs its local alarm state accordingly.  
-            Unfortunately, due to time constraints, even though the timer slash command works and properly updates the device state, we were unable to finish implementing the code to grab the current time, parse these values, and then update the local state. More details have been provided in the Future Work section.</p>
+        <p><strong>Slash Command: /alarm</strong><br>
+        Purpose: Turns the alarm on or off.<br>
+        How it works:<br>
+        Reads the value (on or off) from the command. Sends an update to the AWS IoT device shadow with an "email" field like "Alarm on" or "Alarm off". Sends a confirmation reply in Discord: ✅ Alarm set to on (though this ends up not being visible to the user)</p>
+
+        <p><strong>Slash Command: /timer</strong><br>
+        Purpose: Schedules the alarm to turn on/off at specific times.<br>
+        How it works:<br>
+        Parses ISO timestamps (start_str and stop_str) and localizes them to PDT (Pacific Daylight Time). Converts these times to UNIX timestamps. Sends the timestamps to AWS IoT under a "timer" key in the device shadow. Sends a confirmation reply in Discord showing the scheduled times.</p>
+
+        <p>In both cases, AWS IoT triggers updates to the connected CC3200 device, which syncs its local alarm state accordingly.<br>
+        Unfortunately, due to time constraints, even though the timer slash command works and properly updates the device state, we were unable to finish implementing the code to grab the current time, parse these values, and then update the local state. More details have been provided in the Future Work section.</p>
     </div>
 
     <div class="section">
