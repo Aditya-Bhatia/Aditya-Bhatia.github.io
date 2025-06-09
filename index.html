@@ -191,6 +191,9 @@
 
     <div class="section">
         <h2>Implementation</h2>
+        <h3>Circuit Schematic</h3>
+        <img src="images/Circuit Schematic.png" alt="Circuit Schematic" class="component-image">
+        
         <h3>Brief Overview</h3>
         <p>The project involves connecting the CC3200 board with a PIR motion sensor, an AS608 Fingerprint sensor, the Adafruit OLED, a buzzer, the IR receiver, and AWS to send a receive updates from Discord and email. The system has 4 main alarm states that are displayed on the OLED and can be swapped between by using the AT&T remote + IR Receiver or by sending signals using Discord slash commands. The alarm is triggered when the PIR motion sensor detects motion, and the alarm can be disabled by entering a password using the Remote ir by reading a valid fingerprint using the fingerprint sensor. The user can also change the alarm password and add or replace up to 9 fingerprints. The buzzer is used to send pulses to signify which state the alarm is in, and so is the onboard Red LED of the CC3200. The user can enter a Discord channel that alerts them whenever the state of the alarm has been changed or if the password has been changed. From the Discord channel, the user can send slash commands to enable or disable the alarm or set an alarm on and off timer. The user also receives an email when the alarm is triggered due to motion or incorrect fingerprint, or password attempts.</p>
 
