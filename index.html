@@ -113,6 +113,29 @@
         a:hover {
             text-decoration: underline;
         }
+
+        .component-image {
+            max-width: 100%;
+            height: auto;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .component-image-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .component-image-container img {
+            max-width: 45%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -148,6 +171,10 @@
         <h3>Hardware Components</h3>
         
         <h4>The OLED Screen</h4>
+        <div class="component-image-container">
+            <img src="images/oled front.jpg" alt="OLED Screen Front" class="component-image">
+            <img src="images/oled back.jpg" alt="OLED Screen Back" class="component-image">
+        </div>
         <div class="pinout">
             <h5>Pinout</h5>
             <table style="width: 100%; border-collapse: collapse;">
@@ -188,6 +215,10 @@
         <p>The OLED display is a 128x128 Adafruit SSD1351 module connected via SPI. It is used to present the user interface, including alarm states, input prompts, error messages, and confirmation dialogs. The top half of the screen displays the current system state in large font and color-coded messages, while the bottom half is reserved for input feedback, error notifications, or additional instructions. Drawing functions from a modified Adafruit OLED library are used. These functions were defined as part of earlier labs.</p>
 
         <h4>The IR Sensor + Remote</h4>
+        <div class="component-image-container">
+            <img src="images/IR Receiver.JPG" alt="IR Receiver" class="component-image">
+            <img src="images/remote.jpg" alt="AT&T Remote" class="component-image">
+        </div>
         <div class="pinout">
             <h5>Pinout</h5>
             <table style="width: 100%; border-collapse: collapse;">
@@ -212,6 +243,7 @@
         <p>An AT&T Universal Remote communicates with the system via the provided IR receiver from earlier labs. The IR signal is connected to GPIO 3 and processed using GPIO interrupt handlers and pulse-width measurement via SysTick. Each button on the remote corresponds to a unique 32-bit code, decoded in real-time. Shorter pulse widths are represented as 0, and longer pulse widths are represented as 1. The code has an array of known codes for each button and checks the code to know which button has been pressed. The mute ('m) and last ('l') buttons are used for system state control and submitting, and character deletion, respectively, while the numeric buttons ('0' to '9') are used for password and ID input. The code used for this is the same as the one for the previous two labs.</p>
 
         <h4>The PIR Sensor</h4>
+        <img src="images/PIR Sensor.jpg" alt="PIR Motion Sensor" class="component-image">
         <div class="pinout">
             <h5>Pinout</h5>
             <table style="width: 100%; border-collapse: collapse;">
@@ -236,6 +268,7 @@
         <p>The PIR (Passive Infrared) sensor detects human motion and is connected to GPIO Pin 62 (GPIOA0, pin 0x80). When motion is detected, it triggers a rising-edge GPIO interrupt. If the system is in the Alarm On state, the motion event activates the input mode and starts a ~30-second countdown during which the user must disable the alarm via password or fingerprint. If no valid input is received within this grace period, the system transitions to the Alarm Triggered state.</p>
 
         <h4>The Buzzer</h4>
+        <img src="images/Buzzer.jpg" alt="Piezoelectric Buzzer" class="component-image">
         <div class="pinout">
             <h5>Pinout</h5>
             <table style="width: 100%; border-collapse: collapse;">
@@ -256,6 +289,10 @@
         <p>A piezoelectric buzzer is connected to a GPIO pin configured for PWM using Timer A0. It provides audible feedback to indicate state transitions: Two short beeps: Alarm Off. One long beep: Alarm On. Continuous pulsing: Alarm Triggered. The PWM duty cycle is modified with UpdateDutyCycle() to produce these tones.</p>
 
         <h4>The Fingerprint Sensor</h4>
+        <div class="component-image-container">
+            <img src="images/Fingerprint sensor fornt.jpg" alt="Fingerprint Sensor Front" class="component-image">
+            <img src="images/Fingerprint sensor back.jpg" alt="Fingerprint Sensor Back" class="component-image">
+        </div>
         <div class="pinout">
             <h5>Pinout</h5>
             <table style="width: 100%; border-collapse: collapse;">
